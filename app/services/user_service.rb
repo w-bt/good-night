@@ -18,4 +18,8 @@ class UserService
   def update_user(user, attributes)
     @repository.update(user, attributes)
   end
+
+  def delete_user(user)
+    @repository.delete(user)
+  end
 end

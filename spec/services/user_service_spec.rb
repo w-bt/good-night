@@ -54,4 +54,14 @@ RSpec.describe UserService, type: :service do
       expect(service.update_user(user, attributes)).to be_truthy
     end
   end
+
+  describe '#delete_user' do
+    before do
+      allow(repository).to receive(:delete).with(user).and_return(true)
+    end
+
+    it 'deletes a user' do
+      expect(service.delete_user(user)).to be_truthy
+    end
+  end
 end
