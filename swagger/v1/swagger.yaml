@@ -222,6 +222,35 @@ paths:
                 properties:
                   error:
                     type: string
+  /api/v1/users/{id}/clocks:
+    post:
+      summary: Clock in or clock out a user
+      tags:
+        - Clocks
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                action_type:
+                  type: string
+                  enum: [ clock_in, clock_out ]
+                  example: "clock_in|clock_out"
+      responses:
+        201:
+          description: Clocked in successfully
+        200:
+          description: Clocked out successfully
+        422:
+          description: Unprocessable Entity
 components:
   schemas:
     User:
