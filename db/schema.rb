@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_16_085559) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_16_094225) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -22,6 +22,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_16_085559) do
     t.datetime "updated_at", null: false
     t.index ["user_id", "date"], name: "index_clock_dailies_on_user_id_and_date", unique: true
     t.index ["user_id"], name: "index_clock_dailies_on_user_id"
+  end
+
+  create_table "clock_weeklies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.date "week_start", null: false
+    t.integer "total_duration", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "week_start"], name: "index_clock_weeklies_on_user_id_and_week_start", unique: true
   end
 
   create_table "clocks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
