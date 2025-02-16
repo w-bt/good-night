@@ -10,4 +10,9 @@ class ClockRepository
   def create_clock(clock_in: nil, clock_out: nil)
     @user.clocks.create(clock_in: clock_in, clock_out: clock_out)
   end
+
+  def update_clock(clock, clock_out: nil)
+    clock.update(clock_out: clock_out)
+    clock
+  end
 end

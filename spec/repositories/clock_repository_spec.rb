@@ -27,4 +27,13 @@ RSpec.describe ClockRepository, type: :repository do
       expect(clock.clock_out).to be_nil
     end
   end
+
+  describe '#update_clock' do
+    let(:clock) { create(:clock, user: user, clock_in: Time.current, clock_out: nil) }
+
+    it 'updates the clock record with clock_out time' do
+      updated_clock = repository.update_clock(clock, clock_out: Time.current + 8.hours)
+      expect(updated_clock.clock_out).not_to be_nil
+    end
+  end
 end
