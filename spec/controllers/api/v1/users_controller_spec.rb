@@ -313,5 +313,43 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         end
       end
     end
+
+    describe 'GET #followees_clock_weekly' do
+      let(:date) { Date.today }
+      let(:followees_clock_weekly_service) { instance_double(FolloweesClockWeeklyService) }
+      let(:followee) { create(:user) }
+
+      before do
+        allow(FolloweesClockWeeklyService).to receive(:new).with(user, date).and_return(followees_clock_weekly_service)
+      end
+
+      context 'when followees are found' do
+        let(:clock_weekly) { create(:clock_weekly, user: user, week_start: date) }
+
+        before do
+          allow(followees_clock_weekly_service).to receive(:call).and_return([ { user_id: followee.id, clock_weekly: clock_weekly } ])
+        end
+
+        it 'returns clock weekly records for followees' do
+          get :followees_clock_weekly, params: { id: user.id, week_start: date.to_s }
+
+          expect(response).to have_http_status(:ok)
+          expect(JSON.parse(response.body)).to eq([ { 'user_id' => followee.id, 'clock_weekly' => clock_weekly.as_json } ])
+        end
+      end
+
+      context 'when followees are not found' do
+        before do
+          allow(followees_clock_weekly_service).to receive(:call).and_return([])
+        end
+
+        it 'returns an empty array if no followees are found' do
+          get :followees_clock_weekly, params: { id: user.id, week_start: date.to_s }
+
+          expect(response).to have_http_status(:ok)
+          expect(JSON.parse(response.body)).to eq([])
+        end
+      end
+    end
   end
 end
