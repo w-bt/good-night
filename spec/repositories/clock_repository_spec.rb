@@ -36,4 +36,18 @@ RSpec.describe ClockRepository, type: :repository do
       expect(updated_clock.clock_out).not_to be_nil
     end
   end
+
+  describe '#all_clocks' do
+    it 'returns all clock records for the user' do
+      clock1 = create(:clock, user: user, clock_in: 2.hours.ago, clock_out: 1.hour.ago)
+      clock2 = create(:clock, user: user, clock_in: 1.hour.ago, clock_out: Time.current)
+      clocks = repository.all_clocks
+      expect(clocks).to include(clock1, clock2)
+    end
+
+    it 'returns an empty array if no clock records exist for the user' do
+      clocks = repository.all_clocks
+      expect(clocks).to be_empty
+    end
+  end
 end

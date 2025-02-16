@@ -15,4 +15,8 @@ class ClockRepository
     clock.update(clock_out: clock_out)
     clock
   end
+
+  def all_clocks
+    @user.clocks
+  end
 end
