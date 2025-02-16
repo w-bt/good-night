@@ -11,4 +11,10 @@ RSpec.describe FollowRepository, type: :repository do
       expect(repository.followers(followee.id)).to include(follower)
     end
   end
+
+  describe '#followees' do
+    it 'returns followees of a user' do
+      expect(repository.followees(follower.id)).to include(followee)
+    end
+  end
 end
