@@ -32,6 +32,11 @@ class Api::V1::UsersController < ApplicationController
     head :no_content
   end
 
+  def followers
+    @followers = FollowService.new.followers(params[:id])
+    render json: @followers, status: :ok
+  end
+
   private
 
   def set_user

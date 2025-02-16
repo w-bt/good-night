@@ -95,4 +95,13 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       expect(response).to have_http_status(:no_content)
     end
   end
+
+  describe 'GET #followers' do
+    let(:followee) { create(:user) }
+
+    it 'returns a success response' do
+      get :followers, params: { id: followee.id }
+      expect(response).to have_http_status(:ok)
+    end
+  end
 end
