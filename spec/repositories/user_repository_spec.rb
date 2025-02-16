@@ -9,4 +9,10 @@ RSpec.describe UserRepository, type: :repository do
       expect(repository.all).to include(user)
     end
   end
+
+  describe '#find' do
+    it 'finds a user by id' do
+      expect(repository.find(user.id)).to eq(user)
+    end
+  end
 end
