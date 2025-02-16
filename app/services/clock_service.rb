@@ -2,7 +2,7 @@
 class ClockService
   def initialize(user)
     @user = user
-    @repository = ClockRepository.new(user)
+    @repository = ClockUserRepository.new(user)
   end
 
   def clock_in

@@ -3,10 +3,10 @@ require 'rails_helper'
 RSpec.describe ClockService, type: :service do
   let(:user) { create(:user) }
   let(:service) { ClockService.new(user) }
-  let(:repository) { instance_double(ClockRepository) }
+  let(:repository) { instance_double(ClockUserRepository) }
 
   before do
-    allow(ClockRepository).to receive(:new).with(user).and_return(repository)
+    allow(ClockUserRepository).to receive(:new).with(user).and_return(repository)
   end
 
   describe '#clock_in' do

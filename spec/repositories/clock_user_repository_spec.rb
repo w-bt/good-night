@@ -1,9 +1,9 @@
 # spec/repositories/clock_repository_spec.rb
 require 'rails_helper'
 
-RSpec.describe ClockRepository, type: :repository do
+RSpec.describe ClockUserRepository, type: :repository do
   let(:user) { create(:user) }
-  let(:repository) { ClockRepository.new(user) }
+  let(:repository) { ClockUserRepository.new(user) }
 
   describe '#find_active_clock' do
     it 'finds the active clock record' do

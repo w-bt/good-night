@@ -1,4 +1,4 @@
-class ClockRepository
+class ClockUserRepository
   def initialize(user)
     @user = user
   end
