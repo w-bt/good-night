@@ -10,4 +10,8 @@ class UserService
   def find_user(id)
     @repository.find(id)
   end
+
+  def create_user(attributes)
+    @repository.create(attributes)
+  end
 end
