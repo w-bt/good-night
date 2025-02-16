@@ -40,4 +40,21 @@ RSpec.describe FollowService, type: :service do
       expect(service.find_follow_by_users(follower.id, followee.id)).to eq(follow)
     end
   end
+
+  describe '#create_follow' do
+    let(:attributes) { { follower_id: follower.id, followee_id: followee.id } }
+
+    before do
+      allow(repository).to receive(:create).with(attributes).and_return(follow)
+    end
+
+    it 'creates a new follow' do
+      expect(service.create_follow(attributes)).to eq(follow)
+    end
+
+    it 'returns false if follow is invalid' do
+      attributes = { follower_id: nil, followee_id: followee.id }
+      expect(service.create_follow(attributes)).to be false
+    end
+  end
 end
