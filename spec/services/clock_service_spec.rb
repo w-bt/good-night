@@ -36,4 +36,34 @@ RSpec.describe ClockService, type: :service do
       end
     end
   end
+
+  describe '#clock_out' do
+    context 'when there is an active clock in' do
+      let(:active_clock) { build(:clock, user: user, clock_in: Time.current, clock_out: nil) }
+
+      before do
+        allow(repository).to receive(:find_active_clock).and_return(active_clock)
+        allow(repository).to receive(:update_clock).and_return(active_clock)
+      end
+
+      it 'clocks out successfully' do
+        result = service.clock_out
+
+        expect(result[:success]).to eq('Clocked out successfully')
+        expect(result[:clock]).to be_a(Clock)
+      end
+    end
+
+    context 'when there is no active clock in' do
+      before do
+        allow(repository).to receive(:find_active_clock).and_return(nil)
+      end
+
+      it 'returns an error' do
+        result = service.clock_out
+
+        expect(result[:error]).to eq('No active clock in')
+      end
+    end
+  end
 end
