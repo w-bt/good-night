@@ -9,4 +9,5 @@ class User < ApplicationRecord
 
   has_many :clocks, dependent: :destroy
   has_many :clock_dailies, dependent: :destroy
+  has_many :clock_weeklies, dependent: :destroy
 end
