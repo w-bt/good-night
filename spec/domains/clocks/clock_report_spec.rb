@@ -18,4 +18,18 @@ RSpec.describe Clocks::ClockReport, type: :model do
       service.calculate_daily(clock: clock)
     end
   end
+
+  describe '#calculate_weekly' do
+    let(:clock_report) { instance_double(ClockWeeklyRepository) }
+
+    before do
+      allow(ClockWeeklyRepository).to receive(:new).and_return(clock_report)
+    end
+
+    it 'calls Clocks::ClockReport to update the weekly report' do
+      expect(clock_report).to receive(:update_report)
+
+      service.calculate_weekly(clock: clock)
+    end
+  end
 end
