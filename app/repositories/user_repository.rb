@@ -14,4 +14,8 @@ class UserRepository
   def update(user, attributes)
     user.update(attributes)
   end
+
+  def delete(user)
+    user.destroy
+  end
 end

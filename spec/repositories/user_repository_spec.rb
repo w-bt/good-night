@@ -32,4 +32,10 @@ RSpec.describe UserRepository, type: :repository do
       expect(user.name).to eq('John Smith')
     end
   end
+
+  describe '#delete' do
+    it 'deletes a user' do
+      expect { repository.delete(user) }.to change { User.count }.by(-1)
+    end
+  end
 end
