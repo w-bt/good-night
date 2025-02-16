@@ -6,4 +6,8 @@ class ClockDailyRepository
     clock_daily.total_duration += clock.duration
     clock_daily.save
   end
+
+  def find_by_users_and_date(user_ids, date)
+    ClockDaily.where(user_id: user_ids, date: date).group_by(&:user_id)
+  end
 end
