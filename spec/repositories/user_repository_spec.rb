@@ -15,4 +15,12 @@ RSpec.describe UserRepository, type: :repository do
       expect(repository.find(user.id)).to eq(user)
     end
   end
+
+  describe '#create' do
+    it 'creates a new user' do
+      attributes = { name: 'Jane Doe' }
+      new_user = repository.create(attributes)
+      expect(new_user).to have_attributes(attributes)
+    end
+  end
 end
