@@ -20,4 +20,8 @@ class ClockService
     clock = @repository.update_clock(active_clock, clock_out: Time.current)
     { success: "Clocked out successfully", clock: clock }
   end
+
+  def all_clocks
+    @repository.all_clocks
+  end
 end
