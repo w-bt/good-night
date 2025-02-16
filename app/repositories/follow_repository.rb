@@ -10,4 +10,8 @@ class FollowRepository
   def find_follow_by_users(follower_id, followee_id)
     Follow.find_by(follower_id: follower_id, followee_id: followee_id)
   end
+
+  def create(attributes)
+    Follow.create(attributes)
+  end
 end

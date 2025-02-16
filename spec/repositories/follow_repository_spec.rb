@@ -24,4 +24,20 @@ RSpec.describe FollowRepository, type: :repository do
       expect(result).to eq(follow)
     end
   end
+
+  describe '#create' do
+    let(:attributes) { { follower_id: follower.id, followee_id: followee.id } }
+
+    before do
+      # Ensure no duplicate follows exist before creating
+      Follow.where(attributes).destroy_all
+    end
+
+    it 'creates a new follow' do
+      new_follow = repository.create(attributes)
+      expect(new_follow).to be_persisted
+      expect(new_follow.follower_id).to eq(follower.id)
+      expect(new_follow.followee_id).to eq(followee.id)
+    end
+  end
 end
