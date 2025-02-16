@@ -1,6 +1,8 @@
 class User < ApplicationRecord
   validates :name, presence: true
 
+  has_one :auth, dependent: :destroy
+
   has_many :follower_relationships, foreign_key: :followee_id, class_name: "Follow", dependent: :destroy
   has_many :followers, through: :follower_relationships, source: :follower
 

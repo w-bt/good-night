@@ -3,6 +3,8 @@ require 'rails_helper'
 RSpec.describe User, type: :model do
   it { should validate_presence_of(:name) }
 
+  it { should have_one(:auth).dependent(:destroy) }
+
   it { should have_many(:follower_relationships).with_foreign_key('followee_id').class_name('Follow').dependent(:destroy) }
   it { should have_many(:followers).through(:follower_relationships).source(:follower) }
 
