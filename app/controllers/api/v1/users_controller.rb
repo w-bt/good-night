@@ -1,5 +1,5 @@
 class Api::V1::UsersController < ApplicationController
-  before_action :set_user, only: [ :show, :update, :destroy, :update_clock ]
+  before_action :set_user, only: [ :show, :update, :destroy, :update_clock, :clocks ]
 
   def index
     @users = UserService.new.all_users
@@ -65,6 +65,12 @@ class Api::V1::UsersController < ApplicationController
     else
       render json: { error: "Invalid action_type" }, status: :unprocessable_entity
     end
+  end
+
+  def clocks
+    service = ClockService.new(@user)
+    result = service.all_clocks
+    render json: result, status: :ok
   end
 
   private

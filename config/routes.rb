@@ -10,6 +10,7 @@ Rails.application.routes.draw do
           get :followees
           post :followees, to: "users#update_follow_status"
 
+          get :clocks, to: "users#clocks"
           post :clocks, to: "users#update_clock"
         end
       end

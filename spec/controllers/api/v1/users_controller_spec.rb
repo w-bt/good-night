@@ -257,5 +257,23 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         end
       end
     end
+
+    describe 'GET #clocks' do
+      let(:clocks) { create_list(:clock, 3, user: user) }
+
+      before do
+        allow(user_service).to receive(:find_user).with(user.id.to_s).and_return(user)
+        allow(user).to receive(:clocks).and_return(clocks)
+
+        allow(clock_service).to receive(:all_clocks).and_return(clocks)
+      end
+
+      it 'returns a list of clock records' do
+        get :clocks, params: { id: user.id }
+
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body).size).to eq(3)
+      end
+    end
   end
 end
