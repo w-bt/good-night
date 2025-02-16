@@ -4,11 +4,80 @@ info:
   description: API documentation for V1
   version: v1
 paths:
+  /oauth/token:
+    post:
+      tags:
+        - Authentication
+      summary: Obtain an access token
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                grant_type:
+                  type: string
+                  enum:
+                    - password
+                    - client_credentials
+                    - authorization_code
+                  example: password
+                email:
+                  type: string
+                  example: admin@goodnight.com
+                password:
+                  type: string
+                  example: password
+                client_id:
+                  type: string
+                  example: 7f439566-f7a8-49ae-b411-f55be71ab383
+                client_secret:
+                  type: string
+                  example: 4965f800eb025d436a9cbfa2e2830ad730d9c652be9dd001b49ce7df56a08147
+      responses:
+        '200':
+          description: Access token obtained
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                  token_type:
+                    type: string
+                  expires_in:
+                    type: integer
+                  refresh_token:
+                    type: string
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  error_description:
+                    type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
   /api/v1/users:
     get:
       tags:
         - Users
       summary: List all users
+      security:
+        - BearerAuth: [ ]
       responses:
         '200':
           description: A list of users
@@ -48,6 +117,8 @@ paths:
       tags:
         - Users
       summary: Get a user by ID
+      security:
+        - BearerAuth: [ ]
       parameters:
         - name: id
           in: path
@@ -122,6 +193,8 @@ paths:
   /api/v1/users/{id}/followers:
     get:
       summary: Get followers of the user
+      security:
+        - BearerAuth: [ ]
       tags:
         - Follows
       parameters:
@@ -142,6 +215,8 @@ paths:
   /api/v1/users/{id}/followees:
     get:
       summary: Get followees of the user
+      security:
+        - BearerAuth: [ ]
       tags:
         - Follows
       parameters:
@@ -161,6 +236,8 @@ paths:
                   $ref: '#/components/schemas/User'
     post:
       summary: Follow or unfollow a user
+      security:
+        - BearerAuth: [ ]
       tags:
         - Follows
       parameters:
@@ -225,6 +302,8 @@ paths:
   /api/v1/users/{id}/clocks:
     post:
       summary: Clock in or clock out a user
+      security:
+        - BearerAuth: [ ]
       tags:
         - Clocks
       parameters:
@@ -253,6 +332,8 @@ paths:
           description: Unprocessable Entity
     get:
       summary: Get list of clock records for a user
+      security:
+        - BearerAuth: [ ]
       tags:
         - Clocks
       parameters:
@@ -273,6 +354,8 @@ paths:
   /api/v1/users/{id}/followees_clock/daily:
     get:
       summary: Get followees' clock daily records
+      security:
+        - BearerAuth: [ ]
       tags:
         - Clocks
       parameters:
@@ -310,6 +393,8 @@ paths:
   /api/v1/users/{id}/followees_clock/weekly:
     get:
       summary: Get followees' clock weekly records
+      security:
+        - BearerAuth: [ ]
       tags:
         - Clocks
       parameters:
@@ -345,6 +430,11 @@ paths:
         '404':
           description: Not Found
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     User:
       type: object
