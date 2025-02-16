@@ -23,4 +23,13 @@ RSpec.describe UserRepository, type: :repository do
       expect(new_user).to have_attributes(attributes)
     end
   end
+
+  describe '#update' do
+    it 'updates an existing user' do
+      attributes = { name: 'John Smith' }
+      repository.update(user, attributes)
+      user.reload
+      expect(user.name).to eq('John Smith')
+    end
+  end
 end

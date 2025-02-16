@@ -10,4 +10,8 @@ class UserRepository
   def create(attributes)
     User.create(attributes)
   end
+
+  def update(user, attributes)
+    user.update(attributes)
+  end
 end
