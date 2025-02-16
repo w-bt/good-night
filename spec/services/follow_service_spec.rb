@@ -30,4 +30,14 @@ RSpec.describe FollowService, type: :service do
       expect(service.followees(follower.id)).to eq([ followee ])
     end
   end
+
+  describe '#find_follow_by_users' do
+    before do
+      allow(repository).to receive(:find_follow_by_users).with(follower.id, followee.id).and_return(follow)
+    end
+
+    it 'returns the follow record for given follower and followee' do
+      expect(service.find_follow_by_users(follower.id, followee.id)).to eq(follow)
+    end
+  end
 end
