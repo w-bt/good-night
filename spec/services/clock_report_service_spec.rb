@@ -13,6 +13,7 @@ RSpec.describe ClockReportService, type: :service do
   describe '#update_clock_report' do
     it 'calls ClockDailyRepository to update the clock report' do
       expect(domain).to receive(:calculate_daily).with(clock: clock)
+      expect(domain).to receive(:calculate_weekly).with(clock: clock)
       service.update_clock_report
     end
   end

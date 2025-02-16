@@ -12,6 +12,7 @@ class ClockReportService
 
     ActiveRecord::Base.transaction do
       @domain.calculate_daily(clock: clock)
+      @domain.calculate_weekly(clock: clock)
     end
   end
 end
