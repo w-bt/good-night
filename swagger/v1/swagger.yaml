@@ -251,6 +251,25 @@ paths:
           description: Clocked out successfully
         422:
           description: Unprocessable Entity
+    get:
+      summary: Get list of clock records for a user
+      tags:
+        - Clocks
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: List of clock records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Clock'
 components:
   schemas:
     User:
@@ -264,6 +283,27 @@ components:
           type: string
         updated_at:
           type: string
+    Clock:
+      type: object
+      properties:
+        id:
+          type: string
+        user_id:
+          type: integer
+        clock_in:
+          type: string
+          format: date-time
+        clock_out:
+          type: string
+          format: date-time
+        duration:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
     Error:
       type: object
       properties:
