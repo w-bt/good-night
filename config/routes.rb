@@ -8,6 +8,7 @@ Rails.application.routes.draw do
         member do
           get :followers
           get :followees
+          post :followees, to: "users#update_follow_status"
         end
       end
     end

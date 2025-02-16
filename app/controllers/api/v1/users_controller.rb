@@ -42,6 +42,18 @@ class Api::V1::UsersController < ApplicationController
     render json: @followees, status: :ok
   end
 
+  def update_follow_status
+    followee = User.find(params[:id])  # Followee is the target user
+    follower = User.find(params[:user_id])  # Follower is the one taking action
+
+    case params[:action_type]
+    when "follow"
+      handle_follow_action(follower, followee)
+    else
+      render json: { error: "Invalid action_type" }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def set_user
@@ -50,5 +62,19 @@ class Api::V1::UsersController < ApplicationController
 
   def user_params
     params.require(:user).permit(:name)
+  end
+
+  def handle_follow_action(follower, followee)
+    follow = FollowService.new.find_follow_by_users(follower.id, followee.id)
+    if follow
+      render json: { message: "Already following user" }, status: :ok
+    else
+      follow = FollowService.new.create_follow(follower_id: follower.id, followee_id: followee.id)
+      if follow
+        render json: { message: "Successfully followed user" }, status: :ok
+      else
+        render json: { error: "Unable to follow user" }, status: :unprocessable_entity
+      end
+    end
   end
 end

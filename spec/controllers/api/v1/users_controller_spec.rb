@@ -96,21 +96,68 @@ RSpec.describe Api::V1::UsersController, type: :controller do
     end
   end
 
-  describe 'GET #followers' do
-    let(:followee) { create(:user) }
-
-    it 'returns a success response' do
-      get :followers, params: { id: followee.id }
-      expect(response).to have_http_status(:ok)
-    end
-  end
-
-  describe 'GET #followees' do
+  describe 'follow' do
     let(:follower) { create(:user) }
+    let(:followee) { create(:user) }
+    let(:follow_service) { instance_double(FollowService) }
 
-    it 'returns a success response' do
-      get :followees, params: { id: follower.id }
-      expect(response).to have_http_status(:ok)
+    before do
+      allow(FollowService).to receive(:new).and_return(follow_service)
+      allow(follow_service).to receive(:followers).with(followee.id.to_s).and_return([ follower ])
+      allow(follow_service).to receive(:followees).with(follower.id.to_s).and_return([ followee ])
+      allow(follow_service).to receive(:create_follow).and_return(double("Follow"))
+    end
+
+    describe 'GET #followers' do
+      it 'returns a success response' do
+        get :followers, params: { id: followee.id }
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    describe 'GET #followees' do
+      it 'returns a success response' do
+        get :followees, params: { id: follower.id }
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    describe 'PUT #update_follow_status' do
+      context 'when following a user successfully' do
+        before do
+          allow(follow_service).to receive(:find_follow_by_users).and_return(nil)
+          allow(follow_service).to receive(:create_follow).and_return(double("Follow"))
+        end
+
+        it 'returns a created response' do
+          put :update_follow_status, params: { id: followee.id, user_id: follower.id, action_type: "follow" }
+
+          expect(response).to have_http_status(:ok)
+          expect(JSON.parse(response.body)['message']).to eq("Successfully followed user")
+        end
+      end
+
+      context 'when already following the user' do
+        before do
+          allow(follow_service).to receive(:find_follow_by_users).and_return(double("Follow"))
+        end
+
+        it 'returns a success response with a message' do
+          put :update_follow_status, params: { id: followee.id, user_id: follower.id, action_type: "follow" }
+
+          expect(response).to have_http_status(:ok)
+          expect(JSON.parse(response.body)['message']).to eq("Already following user")
+        end
+      end
+
+      context 'when action_type is invalid' do
+        it 'returns an unprocessable entity response' do
+          put :update_follow_status, params: { id: followee.id, user_id: follower.id, action_type: "invalid_action" }
+
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(JSON.parse(response.body)['error']).to eq("Invalid action_type")
+        end
+      end
     end
   end
 end
