@@ -47,5 +47,10 @@ RSpec.describe Clock, type: :model do
 
       expect(clock.duration).to eq((clock.clock_out - clock.clock_in).to_i)
     end
+
+    it 'enqueues BackfillClockReportJob after save when clock_out is changed' do
+      clock = create(:clock, user: user, clock_in: 2.hours.ago, clock_out: nil)
+      expect { clock.update(clock_out: Time.current) }.to have_enqueued_job(BackfillClockReportJob).with(clock.id)
+    end
   end
 end

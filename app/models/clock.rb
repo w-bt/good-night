@@ -5,6 +5,7 @@ class Clock < ApplicationRecord
   validate :validate_clock_in_out_constraints
 
   before_save :calculate_duration, if: :clock_out_changed?
+  after_save :enqueue_backfill_job, if: :saved_change_to_clock_out?
 
   private
 
@@ -25,5 +26,10 @@ class Clock < ApplicationRecord
   def calculate_duration
     return unless clock_in.present? && clock_out.present?
     self.duration = (clock_out - clock_in).to_i
+  end
+
+  def enqueue_backfill_job
+    return unless clock_in.present? && clock_out.present?
+    BackfillClockReportJob.perform_later(id)
   end
 end
