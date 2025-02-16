@@ -1,5 +1,5 @@
 class Api::V1::UsersController < ApplicationController
-  before_action :set_user, only: [ :show, :update ]
+  before_action :set_user, only: [ :show, :update, :destroy ]
 
   def index
     @users = UserService.new.all_users
@@ -25,6 +25,11 @@ class Api::V1::UsersController < ApplicationController
     else
       render json: @user.errors, status: :unprocessable_entity
     end
+  end
+
+  def destroy
+    UserService.new.delete_user(@user)
+    head :no_content
   end
 
   private

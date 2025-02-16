@@ -83,4 +83,16 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       end
     end
   end
+
+  describe 'DELETE #destroy' do
+    before do
+      allow(user_service).to receive(:find_user).with(user.id.to_s).and_return(user)
+      allow(user_service).to receive(:delete_user).and_return(true)
+    end
+
+    it 'destroys the requested user' do
+      delete :destroy, params: { id: user.to_param }
+      expect(response).to have_http_status(:no_content)
+    end
+  end
 end
