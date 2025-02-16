@@ -222,6 +222,32 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         end
       end
 
+      context 'when clocking out successfully' do
+        before do
+          allow(clock_service).to receive(:clock_out).and_return({ success: 'Clocked out successfully', clock: build(:clock, user: user, clock_in: Time.current, clock_out: Time.current + 8.hours) })
+        end
+
+        it 'clocks out successfully' do
+          post :update_clock, params: { id: user.id, action_type: 'clock_out' }
+
+          expect(response).to have_http_status(:ok)
+          expect(JSON.parse(response.body)['success']).to eq('Clocked out successfully')
+        end
+      end
+
+      context 'when there is no active clock in' do
+        before do
+          allow(clock_service).to receive(:clock_out).and_return({ error: 'No active clock in' })
+        end
+
+        it 'returns an error' do
+          post :update_clock, params: { id: user.id, action_type: 'clock_out' }
+
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(JSON.parse(response.body)['error']).to eq('No active clock in')
+        end
+      end
+
       context 'when action_type is invalid' do
         it 'returns an unprocessable entity response' do
           post :update_clock, params: { id: user.id, action_type: 'invalid_action' }

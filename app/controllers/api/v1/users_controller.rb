@@ -60,6 +60,8 @@ class Api::V1::UsersController < ApplicationController
     case params[:action_type]
     when "clock_in"
       clock_in
+    when "clock_out"
+      clock_out
     else
       render json: { error: "Invalid action_type" }, status: :unprocessable_entity
     end
@@ -107,6 +109,17 @@ class Api::V1::UsersController < ApplicationController
       render json: { error: result[:error] }, status: :unprocessable_entity
     else
       render json: result, status: :created
+    end
+  end
+
+  def clock_out
+    service = ClockService.new(@user)
+    result = service.clock_out
+
+    if result[:error]
+      render json: { error: result[:error] }, status: :unprocessable_entity
+    else
+      render json: result, status: :ok
     end
   end
 end
