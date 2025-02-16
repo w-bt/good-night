@@ -55,4 +55,32 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       end
     end
   end
+
+  describe 'PUT #update' do
+    before do
+      allow(user_service).to receive(:find_user).with(user.id.to_s).and_return(user)
+    end
+
+    context 'with valid params' do
+      before do
+        allow(user_service).to receive(:update_user).and_return(true)
+      end
+
+      it 'updates the requested user' do
+        put :update, params: { id: user.to_param, user: attributes }
+        expect(response).to be_successful
+      end
+    end
+
+    context 'with invalid params' do
+      before do
+        allow(user_service).to receive(:update_user).and_return(false)
+      end
+
+      it 'returns an unprocessable entity response' do
+        put :update, params: { id: user.to_param, user: attributes }
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+  end
 end

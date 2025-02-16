@@ -1,4 +1,6 @@
 class Api::V1::UsersController < ApplicationController
+  before_action :set_user, only: [ :show, :update ]
+
   def index
     @users = UserService.new.all_users
     render json: @users, status: :ok
@@ -12,6 +14,14 @@ class Api::V1::UsersController < ApplicationController
     @user = UserService.new.create_user(user_params)
     if @user.persisted?
       render json: @user, status: :created
+    else
+      render json: @user.errors, status: :unprocessable_entity
+    end
+  end
+
+  def update
+    if UserService.new.update_user(@user, user_params)
+      render json: @user
     else
       render json: @user.errors, status: :unprocessable_entity
     end
