@@ -150,6 +150,33 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         end
       end
 
+      context 'when unfollowing a user successfully' do
+        before do
+          allow(follow_service).to receive(:find_follow_by_users).and_return(double("Follow"))
+          allow(follow_service).to receive(:delete_follow).and_return(true)
+        end
+
+        it 'returns a success response' do
+          put :update_follow_status, params: { id: followee.id, user_id: follower.id, action_type: "unfollow" }
+
+          expect(response).to have_http_status(:ok)
+          expect(JSON.parse(response.body)['message']).to eq("Successfully unfollowed user")
+        end
+      end
+
+      context 'when trying to unfollow a user that is not followed' do
+        before do
+          allow(follow_service).to receive(:find_follow_by_users).and_return(nil)
+        end
+
+        it 'returns a not found response' do
+          put :update_follow_status, params: { id: followee.id, user_id: follower.id, action_type: "unfollow" }
+
+          expect(response).to have_http_status(:not_found)
+          expect(JSON.parse(response.body)['error']).to eq("Follow relationship not found")
+        end
+      end
+
       context 'when action_type is invalid' do
         it 'returns an unprocessable entity response' do
           put :update_follow_status, params: { id: followee.id, user_id: follower.id, action_type: "invalid_action" }

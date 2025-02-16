@@ -43,12 +43,14 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def update_follow_status
-    followee = User.find(params[:id])  # Followee is the target user
-    follower = User.find(params[:user_id])  # Follower is the one taking action
+    follower = User.find(params[:id])  # Follower is the one taking action
+    followee = User.find(params[:user_id])  # Followee is the target user
 
     case params[:action_type]
     when "follow"
       handle_follow_action(follower, followee)
+    when "unfollow"
+      handle_unfollow_action(follower, followee)
     else
       render json: { error: "Invalid action_type" }, status: :unprocessable_entity
     end
@@ -75,6 +77,16 @@ class Api::V1::UsersController < ApplicationController
       else
         render json: { error: "Unable to follow user" }, status: :unprocessable_entity
       end
+    end
+  end
+
+  def handle_unfollow_action(follower, followee)
+    follow = FollowService.new.find_follow_by_users(follower.id, followee.id)
+    if follow
+      FollowService.new.delete_follow(follow)
+      render json: { message: "Successfully unfollowed user" }, status: :ok
+    else
+      render json: { error: "Follow relationship not found" }, status: :not_found
     end
   end
 end
