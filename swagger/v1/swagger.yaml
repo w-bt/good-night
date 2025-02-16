@@ -139,6 +139,26 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
+  /api/v1/users/{id}/followees:
+    get:
+      summary: Get followees of the user
+      tags:
+        - Follows
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of followees
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
 components:
   schemas:
     User:
