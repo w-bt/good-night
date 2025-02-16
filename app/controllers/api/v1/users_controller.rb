@@ -1,5 +1,5 @@
 class Api::V1::UsersController < ApplicationController
-  before_action :set_user, only: [ :show, :update, :destroy ]
+  before_action :set_user, only: [ :show, :update, :destroy, :update_clock ]
 
   def index
     @users = UserService.new.all_users
@@ -56,6 +56,15 @@ class Api::V1::UsersController < ApplicationController
     end
   end
 
+  def update_clock
+    case params[:action_type]
+    when "clock_in"
+      clock_in
+    else
+      render json: { error: "Invalid action_type" }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def set_user
@@ -87,6 +96,17 @@ class Api::V1::UsersController < ApplicationController
       render json: { message: "Successfully unfollowed user" }, status: :ok
     else
       render json: { error: "Follow relationship not found" }, status: :not_found
+    end
+  end
+
+  def clock_in
+    service = ClockService.new(@user)
+    result = service.clock_in
+
+    if result[:error]
+      render json: { error: result[:error] }, status: :unprocessable_entity
+    else
+      render json: result, status: :created
     end
   end
 end

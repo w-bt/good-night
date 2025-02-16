@@ -187,4 +187,49 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       end
     end
   end
+
+  describe 'clock' do
+    let(:clock_service) { instance_double(ClockService) }
+
+    before do
+      allow(ClockService).to receive(:new).and_return(clock_service)
+    end
+
+    describe 'POST #update_clock' do
+      context 'when clocking in successfully' do
+        before do
+          allow(clock_service).to receive(:clock_in).and_return({ success: 'Clocked in successfully', clock: build(:clock, user: user, clock_in: Time.current) })
+        end
+
+        it 'clocks in successfully' do
+          post :update_clock, params: { id: user.id, action_type: 'clock_in' }
+
+          expect(response).to have_http_status(:created)
+          expect(JSON.parse(response.body)['success']).to eq('Clocked in successfully')
+        end
+      end
+
+      context 'when already clocked in' do
+        before do
+          allow(clock_service).to receive(:clock_in).and_return({ error: 'Already clocked in' })
+        end
+
+        it 'returns an error' do
+          post :update_clock, params: { id: user.id, action_type: 'clock_in' }
+
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(JSON.parse(response.body)['error']).to eq('Already clocked in')
+        end
+      end
+
+      context 'when action_type is invalid' do
+        it 'returns an unprocessable entity response' do
+          post :update_clock, params: { id: user.id, action_type: 'invalid_action' }
+
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(JSON.parse(response.body)['error']).to eq('Invalid action_type')
+        end
+      end
+    end
+  end
 end
