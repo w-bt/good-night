@@ -14,13 +14,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_16_085559) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
-  create_table "clock_dailies", force: :cascade do |t|
+  create_table "clock_dailies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id", null: false
     t.date "date", null: false
     t.integer "total_duration", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id", "date"], name: "index_clock_dailies_on_user_id_and_date", unique: true
+    t.index ["user_id"], name: "index_clock_dailies_on_user_id"
   end
 
   create_table "clocks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -52,6 +53,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_16_085559) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "clock_dailies", "users"
   add_foreign_key "clocks", "users"
   add_foreign_key "follows", "users", column: "followee_id"
   add_foreign_key "follows", "users", column: "follower_id"

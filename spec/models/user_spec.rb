@@ -10,6 +10,7 @@ RSpec.describe User, type: :model do
   it { should have_many(:followees).through(:followee_relationships).source(:followee) }
 
   it { should have_many(:clocks).dependent(:destroy) }
+  it { should have_many(:clock_dailies).dependent(:destroy) }
 
   describe 'follower and followee relationships' do
     let(:user1) { create(:user) }

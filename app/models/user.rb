@@ -8,4 +8,5 @@ class User < ApplicationRecord
   has_many :followees, through: :followee_relationships, source: :followee
 
   has_many :clocks, dependent: :destroy
+  has_many :clock_dailies, dependent: :destroy
 end
