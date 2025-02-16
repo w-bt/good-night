@@ -14,4 +14,8 @@ class FollowRepository
   def create(attributes)
     Follow.create(attributes)
   end
+
+  def delete(follow)
+    follow.destroy
+  end
 end

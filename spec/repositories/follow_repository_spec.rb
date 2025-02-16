@@ -40,4 +40,10 @@ RSpec.describe FollowRepository, type: :repository do
       expect(new_follow.followee_id).to eq(followee.id)
     end
   end
+
+  describe '#delete' do
+    it 'deletes a follow' do
+      expect { repository.delete(follow) }.to change { Follow.count }.by(-1)
+    end
+  end
 end
