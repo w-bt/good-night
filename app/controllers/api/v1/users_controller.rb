@@ -1,5 +1,5 @@
 class Api::V1::UsersController < ApplicationController
-  before_action :set_user, only: [ :show, :update, :destroy, :update_clock, :clocks ]
+  before_action :set_user, only: [ :show, :update, :destroy, :update_clock, :clocks, :followees_clock_daily ]
 
   def index
     @users = UserService.new.all_users
@@ -71,6 +71,12 @@ class Api::V1::UsersController < ApplicationController
     service = ClockService.new(@user)
     result = service.all_clocks
     render json: result, status: :ok
+  end
+
+  def followees_clock_daily
+    date = params[:date] ? Date.parse(params[:date]) : Time.current.to_date
+    followees_clock_daily = FolloweesClockDailyService.new(@user, date).call
+    render json: followees_clock_daily, status: :ok
   end
 
   private

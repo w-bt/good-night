@@ -12,6 +12,8 @@ Rails.application.routes.draw do
 
           get :clocks, to: "users#clocks"
           post :clocks, to: "users#update_clock"
+
+          get "followees_clock/daily", to: "users#followees_clock_daily"
         end
       end
     end
