@@ -23,4 +23,8 @@ class FollowService
       false
     end
   end
+
+  def delete_follow(follow)
+    @repository.delete(follow)
+  end
 end

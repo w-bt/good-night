@@ -57,4 +57,14 @@ RSpec.describe FollowService, type: :service do
       expect(service.create_follow(attributes)).to be false
     end
   end
+
+  describe '#delete_follow' do
+    before do
+      allow(repository).to receive(:delete).with(follow).and_return(follow)
+    end
+
+    it 'deletes a follow' do
+      expect(service.delete_follow(follow)).to eq(follow)
+    end
+  end
 end
