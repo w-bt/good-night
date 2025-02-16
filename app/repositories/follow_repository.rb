@@ -18,4 +18,10 @@ class FollowRepository
   def delete(follow)
     follow.destroy
   end
+
+  def find_followee_ids_in_batches(user_id, batch_size: 10)
+    Follow.where(follower_id: user_id).in_batches(of: batch_size) do |batch|
+      yield batch.pluck(:followee_id) if block_given?
+    end
+  end
 end

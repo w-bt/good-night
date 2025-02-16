@@ -46,4 +46,38 @@ RSpec.describe FollowRepository, type: :repository do
       expect { repository.delete(follow) }.to change { Follow.count }.by(-1)
     end
   end
+
+  describe '#find_followee_ids_in_batches' do
+    let(:user) { create(:user) }
+    let(:followees) { create_list(:user, 15) }
+    let(:repository) { FollowRepository.new }
+
+    before do
+      followees.each { |followee| create(:follow, follower: user, followee: followee) }
+    end
+
+    it 'fetches followee IDs in batches' do
+      batch_size = 10
+      followee_ids = []
+
+      repository.find_followee_ids_in_batches(user.id, batch_size: batch_size) do |batch|
+        followee_ids.concat(batch)
+      end
+
+      expect(followee_ids.size).to eq(followees.size)
+      expect(followee_ids).to match_array(followees.pluck(:id))
+    end
+
+    it 'fetches followee IDs in the correct batch size' do
+      batch_size = 10
+      batch_count = 0
+
+      repository.find_followee_ids_in_batches(user.id, batch_size: batch_size) do |batch|
+        expect(batch.size).to be <= batch_size
+        batch_count += 1
+      end
+
+      expect(batch_count).to eq(2)
+    end
+  end
 end
