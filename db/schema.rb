@@ -10,9 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_16_063930) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_16_075624) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "clocks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.datetime "clock_in"
+    t.datetime "clock_out"
+    t.integer "duration", default: -1
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "clock_in", "clock_out"], name: "index_clocks_on_user_id_and_clock_in_and_clock_out", unique: true, where: "((clock_in IS NULL) AND (clock_out IS NULL))"
+    t.index ["user_id", "clock_in"], name: "index_clocks_on_user_id_and_clock_in", unique: true, where: "(clock_in IS NULL)"
+    t.index ["user_id", "clock_out"], name: "index_clocks_on_user_id_and_clock_out", unique: true, where: "(clock_out IS NULL)"
+    t.index ["user_id"], name: "index_clocks_on_user_id"
+  end
 
   create_table "follows", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "follower_id", null: false
@@ -30,6 +43,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_16_063930) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "clocks", "users"
   add_foreign_key "follows", "users", column: "followee_id"
   add_foreign_key "follows", "users", column: "follower_id"
 end
