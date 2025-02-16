@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe UserService, type: :service do
   let(:repository) { instance_double(UserRepository) }
   let(:service) { UserService.new }
+  let(:user) { instance_double(User) }
 
   before do
     allow(UserRepository).to receive(:new).and_return(repository)
@@ -21,8 +22,6 @@ RSpec.describe UserService, type: :service do
   end
 
   describe '#find_user' do
-    let(:user) { instance_double(User) }
-
     before do
       allow(repository).to receive(:find).with(1).and_return(user)
     end
@@ -34,7 +33,6 @@ RSpec.describe UserService, type: :service do
 
   describe '#create_user' do
     let(:attributes) { { name: Faker::Name.name } }
-    let(:user) { instance_double(User) }
 
     before do
       allow(repository).to receive(:create).with(attributes).and_return(user)
@@ -42,6 +40,18 @@ RSpec.describe UserService, type: :service do
 
     it 'creates a new user' do
       expect(service.create_user(attributes)).to eq(user)
+    end
+  end
+
+  describe '#update_user' do
+    let(:attributes) { { name: Faker::Name.name } }
+
+    before do
+      allow(repository).to receive(:update).with(user, attributes).and_return(true)
+    end
+
+    it 'updates an existing user' do
+      expect(service.update_user(user, attributes)).to be_truthy
     end
   end
 end

@@ -14,4 +14,8 @@ class UserService
   def create_user(attributes)
     @repository.create(attributes)
   end
+
+  def update_user(user, attributes)
+    @repository.update(user, attributes)
+  end
 end
