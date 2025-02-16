@@ -16,4 +16,13 @@ RSpec.describe UserService, type: :service do
       expect(service.all_users).to eq(users)
     end
   end
+
+  describe '#find_user' do
+    it 'finds a user by id' do
+      user = instance_double(User)
+      allow(repository).to receive(:find).with(1).and_return(user)
+
+      expect(service.find_user(1)).to eq(user)
+    end
+  end
 end
