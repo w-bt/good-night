@@ -4,7 +4,7 @@ class UserRepository
   end
 
   def find(id)
-    User.find(id)
+    Redis::User.new(id).get
   end
 
   def create(attributes)
@@ -13,9 +13,11 @@ class UserRepository
 
   def update(user, attributes)
     user.update(attributes)
+    Redis::User.new(user.id).del
   end
 
   def delete(user)
     user.destroy
+    Redis::User.new(user.id).del
   end
 end
