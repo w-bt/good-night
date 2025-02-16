@@ -29,4 +29,30 @@ RSpec.describe ClockWeeklyRepository, type: :repository do
       end
     end
   end
+
+  describe '#find_by_users_and_date' do
+    let(:user1) { create(:user) }
+    let(:user2) { create(:user) }
+    let(:date) { Date.today }
+    let(:repository) { ClockWeeklyRepository.new }
+
+    context 'when clock weekly records exist' do
+      let!(:clock_weekly1) { create(:clock_weekly, user: user1, week_start: date) }
+      let!(:clock_weekly2) { create(:clock_weekly, user: user2, week_start: date) }
+
+      it 'fetches clock weekly records for multiple users' do
+        result = repository.find_by_users_and_date([ user1.id, user2.id ], date)
+        expect(result.keys).to match_array([ user1.id, user2.id ])
+        expect(result[user1.id].first).to eq(clock_weekly1)
+        expect(result[user2.id].first).to eq(clock_weekly2)
+      end
+    end
+
+    context 'when clock weekly records do not exist' do
+      it 'returns an empty hash if no records are found' do
+        result = repository.find_by_users_and_date([ user1.id, user2.id ], date)
+        expect(result).to be_empty
+      end
+    end
+  end
 end
