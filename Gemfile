@@ -61,7 +61,7 @@ group :development, :test do
   gem "dotenv-rails"
   gem "rspec-rails"
   gem "faker"
-  gem "shoulda-matchers", "~> 4.0"
+  gem "shoulda-matchers", "~> 6.4"
   gem "rswag"
   gem "factory_bot_rails"
   gem "rubocop"
